@@ -4,10 +4,8 @@ import oneflow as flow
 import oneflow.nn as nn
 from oneflow.nn import functional as F
 import sys
-sys.path.append('/home/xuyongning/writer/')
-sys.path.append('/home/xuyongning/writer/AI_Writer_Web/')
-#sys.path.append('/workspace/writer/')
-#sys.path.append('/workspace/writer/AI_Writer_Web/')
+sys.path.append('/path/to/writer/')
+sys.path.append('/path/to/writer/AI_Writer_Web/')
 import AI_Writer_Web.src.utils
 from AI_Writer_Web.src.model import GPT, GPTConfig
 import AI_Writer_Web.config as config
@@ -17,10 +15,8 @@ class Writer:
     def __init__(self):
         #print(flow.__version__)
         #print(f"\nLoading model for {config.RUN_DEVICE}...")
-        model_name = "/home/xuyongning/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)  # 预训练好的模型
-        word_name = "/home/xuyongning/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)
-        #model_name = "/workspace/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)  # 预训练好的模型
-        #word_name = "/workspace/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)
+        model_name = "/path/to/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)  # 预训练好的模型
+        word_name = "/path/to/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)
         n_embd = config.N_HEAD * 64
         n_attn = n_embd
         n_ffn = n_embd
@@ -153,6 +149,7 @@ class Writer:
         outmsg["time"] = time_consum
 
         return outmsg
+        
 if __name__ == "__main__":
     writer = Writer()
     input = {
