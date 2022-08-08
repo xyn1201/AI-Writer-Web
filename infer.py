@@ -3,16 +3,24 @@ import numpy as np
 import oneflow as flow
 import oneflow.nn as nn
 from oneflow.nn import functional as F
-import src.utils
-from src.model import GPT, GPTConfig
-import config
+import sys
+sys.path.append('/home/xuyongning/writer/')
+sys.path.append('/home/xuyongning/writer/AI_Writer_Web/')
+#sys.path.append('/workspace/writer/')
+#sys.path.append('/workspace/writer/AI_Writer_Web/')
+import AI_Writer_Web.src.utils
+from AI_Writer_Web.src.model import GPT, GPTConfig
+import AI_Writer_Web.config as config
 
 
 class Writer:
     def __init__(self):
-        print(f"\nLoading model for {config.RUN_DEVICE}...")
-        model_name = "./model/{}".format(config.DATA_NAME)  # 预训练好的模型
-        word_name = "./model/{}".format(config.DATA_NAME)
+        #print(flow.__version__)
+        #print(f"\nLoading model for {config.RUN_DEVICE}...")
+        model_name = "/home/xuyongning/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)  # 预训练好的模型
+        word_name = "/home/xuyongning/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)
+        #model_name = "/workspace/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)  # 预训练好的模型
+        #word_name = "/workspace/writer/AI_Writer_Web/model/{}".format(config.DATA_NAME)
         n_embd = config.N_HEAD * 64
         n_attn = n_embd
         n_ffn = n_embd
@@ -76,7 +84,7 @@ class Writer:
             if config.RUN_DEVICE == "gpu":
                 self.model = self.model.cuda()
             self.model.load_state_dict(m2)
-        print("done:", model_name, "&", word_name)
+        #print("done:", model_name, "&", word_name)
 
     def inference(self, data):
         context = data["txt"]
@@ -125,11 +133,11 @@ class Writer:
             pos = -1 if real_len >= config.CTX_LEN else real_len - 1
 
             if self.itos[int(x[real_len - 1])] == "\n":
-                char = src.utils.sample_logits(
+                char = AI_Writer_Web.src.utils.sample_logits(
                     out, pos, temperature=1.0, top_p=config.TOP_P_NEWLINE
                 )
             else:
-                char = src.utils.sample_logits(
+                char = AI_Writer_Web.src.utils.sample_logits(
                     out, pos, temperature=1.0, top_p=config.TOP_P
                 )
 
@@ -145,3 +153,18 @@ class Writer:
         outmsg["time"] = time_consum
 
         return outmsg
+if __name__ == "__main__":
+    writer = Writer()
+    input = {
+        "txt": "我不知道自己想输入什么，但至少要到二十字",
+        "preLen": 20 # 预测的长度
+    }
+    output = writer.inference(input)
+    print(output["time"])
+    print(output["txt"])
+    """
+    {
+        "txt": "预测的文本",
+        "time": 0.1456 # 花费的时间
+    }
+    """
