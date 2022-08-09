@@ -58,7 +58,10 @@ class Writer:
                     n_ffn=n_ffn,
                 )
             )
-            m2 = flow.load(model_name).state_dict()
+            if config.RUN_DEVICE == "cpu":
+                m2 = flow.load(model_name, map_location='cpu').state_dict()
+            else:
+                m2 = flow.load(model_name).state_dict()
             for i in range(config.N_LAYER):
                 prefix = f"blocks.{i}.attn."
                 time_w = m2[prefix + "time_w"]
